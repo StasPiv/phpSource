@@ -15,7 +15,7 @@ class PhpFunction extends PhpElement
 {
     /**
      *
-     * @var string String containing the params to the function
+     * @var array|PhpParam[] String containing the params to the function
      * @access private
      */
     private $params;
@@ -33,22 +33,28 @@ class PhpFunction extends PhpElement
      * @access private
      */
     private $comment;
+    /**
+     * @var null
+     */
+    private $returnType;
 
     /**
      *
      * @param string $access
      * @param string $identifier
-     * @param string $params
+     * @param array $params
      * @param string $source
      * @param PhpDocComment $comment
+     * @param null $returnType
      */
-    public function __construct($access, $identifier, $params, $source, PhpDocComment $comment = null)
+    public function __construct($access, $identifier, $params, $source, PhpDocComment $comment = null, $returnType = null)
     {
         $this->access = $access;
         $this->identifier = $identifier;
         $this->params = $params;
         $this->source = $source;
         $this->comment = $comment;
+        $this->returnType = $returnType;
     }
 
     /**
@@ -64,7 +70,11 @@ class PhpFunction extends PhpElement
             $ret .= $this->getSourceRow($this->comment->getSource());
         }
 
-        $ret .= $this->getSourceRow($this->access . ' function ' . $this->identifier . '(' . $this->params . ')');
+        $sourceRow = $this->access . ' function ' . $this->identifier . '(' . implode(', ', $this->params) . ')';
+
+        $sourceRow .= ($this->returnType ? (': '.$this->returnType) : '');
+
+        $ret .= $this->getSourceRow($sourceRow);
         $ret .= $this->getSourceRow('{');
         $ret .= $this->getSourceRow($this->source);
         $ret .= $this->getSourceRow('}');

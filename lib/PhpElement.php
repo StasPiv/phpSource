@@ -104,4 +104,9 @@ abstract class PhpElement
 
         return $ret;
     }
+
+    function __toString()
+    {
+        return $this->getSource();
+    }
 }
