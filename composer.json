@@ -1,0 +1,19 @@
+{
+    "name": "staspiv/phpSource",
+    "description": "Class library for generating php classes",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "StasPiv\\PhpSource": ["lib/"]
+        }
+    },
+    "require": {
+        "php": ">=5.6",
+        "ext-soap": "*"
+    },
+    "require-dev": {
+
+    }
+}
