@@ -14,7 +14,7 @@ use Exception;
  * @author Fredrik Wallgren <fredrik.wallgren@gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
-class PhpFile
+class PhpFile extends PhpElement
 {
     /**
      *
@@ -115,7 +115,7 @@ class PhpFile
      *
      * @param string $namespace The namespace to add
      */
-    public function addNamespace($namespace)
+    public function setNamespace($namespace)
     {
         if (in_array($namespace, $this->namespaces) == false) {
             $this->namespaces[] = $namespace;
@@ -140,6 +140,16 @@ class PhpFile
     public function setUseClassName($useClassNames)
     {
         $this->useClassNames = $useClassNames;
+    }
+
+    /**
+     * Set a use class names
+     *
+     * @param string $useClassName The useClassNames to set
+     */
+    public function addUseClassName($useClassName)
+    {
+        $this->useClassNames[] = $useClassName;
     }
 
     /**

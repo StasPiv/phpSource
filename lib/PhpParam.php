@@ -49,4 +49,20 @@ class PhpParam extends PhpElement
         return $source;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return null
+     */
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
+    }
+
 }
