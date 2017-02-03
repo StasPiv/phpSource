@@ -44,7 +44,7 @@ class PhpDocElement
      * @param string $variableName
      * @param string $description
      */
-    public function __construct($type, $dataType, $variableName, $description)
+    public function __construct($type, $dataType = '', $variableName = '', $description = '')
     {
         $this->type = $type;
         $this->datatype = $dataType;

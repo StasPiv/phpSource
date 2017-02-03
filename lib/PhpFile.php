@@ -215,4 +215,17 @@ class PhpFile extends PhpElement
     {
         return array_key_exists($identifier, $this->functions);
     }
+
+    /**
+     * @param string $identifier
+     * @return PhpClass
+     */
+    public function getClass($identifier)
+    {
+        if (!$this->classExists($identifier)) {
+            throw new \RuntimeException('Class ' . $identifier . ' is not found');
+        }
+
+        return $this->classes[$identifier];
+    }
 }

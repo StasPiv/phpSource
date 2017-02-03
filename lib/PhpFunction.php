@@ -22,7 +22,7 @@ class PhpFunction extends PhpElement
 
     /**
      *
-     * @var The code inside {}
+     * @var string code inside {}
      * @access private
      */
     private $source;
@@ -80,5 +80,15 @@ class PhpFunction extends PhpElement
         $ret .= $this->getSourceRow('}');
 
         return $ret;
+    }
+
+    /**
+     * @param string $source
+     * @return PhpFunction
+     */
+    public function setSource(string $source)
+    {
+        $this->source = $source;
+        return $this;
     }
 }
