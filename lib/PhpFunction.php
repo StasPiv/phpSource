@@ -37,17 +37,30 @@ class PhpFunction extends PhpElement
      * @var null
      */
     private $returnType;
+    /**
+     * @var bool
+     */
+    private $static;
 
     /**
      *
      * @param string $access
      * @param string $identifier
+     * @param bool $static
      * @param array $params
      * @param string $source
      * @param PhpDocComment $comment
      * @param null $returnType
      */
-    public function __construct($access, $identifier, $params, $source, PhpDocComment $comment = null, $returnType = null)
+    public function __construct(
+        $access,
+        $identifier,
+        $static = false,
+        $params = [],
+        $source = null,
+        PhpDocComment $comment = null,
+        $returnType = null
+    )
     {
         $this->access = $access;
         $this->identifier = $identifier;
@@ -55,6 +68,7 @@ class PhpFunction extends PhpElement
         $this->source = $source;
         $this->comment = $comment;
         $this->returnType = $returnType;
+        $this->static = $static;
     }
 
     /**
@@ -70,14 +84,18 @@ class PhpFunction extends PhpElement
             $ret .= $this->getSourceRow($this->comment->getSource());
         }
 
-        $sourceRow = $this->access . ' function ' . $this->identifier . '(' . implode(', ', $this->params) . ')';
+        $sourceRow = $this->access . ($this->static?' static':'') . ' function ' . $this->identifier . '(' . implode(', ', $this->params) . ')';
 
         $sourceRow .= ($this->returnType ? (': '.$this->returnType) : '');
 
-        $ret .= $this->getSourceRow($sourceRow);
-        $ret .= $this->getSourceRow('{');
-        $ret .= $this->getSourceRow($this->source);
-        $ret .= $this->getSourceRow('}');
+        if ($this->source !== null) {
+            $ret .= $this->getSourceRow($sourceRow);
+            $ret .= $this->getSourceRow('{');
+            $ret .= $this->getSourceRow($this->source);
+            $ret .= $this->getSourceRow('}');
+        } else {
+            $ret .= $this->indentionStr . $sourceRow . ';' . PHP_EOL;
+        }
 
         return $ret;
     }

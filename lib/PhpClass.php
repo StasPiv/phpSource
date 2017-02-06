@@ -90,6 +90,10 @@ class PhpClass extends PhpElement
      * @access private
      */
     private $abstract;
+    /**
+     * @var string
+     */
+    private $classType;
 
     /**
      *
@@ -99,8 +103,17 @@ class PhpClass extends PhpElement
      * @param PhpDocComment $comment
      * @param bool $final
      * @param bool $abstract
+     * @param string $classType
      */
-    public function __construct($identifier, $classExists = false, $extends = '', PhpDocComment $comment = null, $final = false, $abstract = false)
+    public function __construct(
+        $identifier,
+        $classExists = false,
+        $extends = '',
+        PhpDocComment $comment = null,
+        $final = false,
+        $abstract = false,
+        $classType = 'class'
+    )
     {
         $this->dependencies = array();
         $this->classExists = $classExists;
@@ -114,6 +127,7 @@ class PhpClass extends PhpElement
         $this->functions = array();
         $this->indentionStr = '    '; // Use 4 spaces as indention, as requested by PSR-2
         $this->abstract = $abstract;
+        $this->classType = $classType;
     }
 
     /**
@@ -147,10 +161,10 @@ class PhpClass extends PhpElement
             $ret .= 'abstract ';
         }
 
-        $ret .= 'class ' . $this->identifier;
+        $ret .= $this->classType . ' ' . $this->identifier;
 
-        if (strlen($this->extends) > 0) {
-            $ret .= ' extends ' . $this->extends;
+        if (count($this->extends) > 0) {
+            $ret .= ' extends ' . implode(', ', $this->extends);
         }
 
         if (count($this->implements) > 0) {
@@ -310,5 +324,13 @@ class PhpClass extends PhpElement
     public function functionExists($identifier)
     {
         return array_key_exists($identifier, $this->functions);
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassType(): string
+    {
+        return $this->classType;
     }
 }
