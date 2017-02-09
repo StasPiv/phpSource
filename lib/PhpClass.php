@@ -59,7 +59,7 @@ class PhpClass extends PhpElement
 
     /**
      *
-     * @var array Array of constants key = name of constant value = value of constant
+     * @var array|PhpConstant[] Array of constants key = name of constant value = value of constant
      */
     private $constants;
 
@@ -76,6 +76,13 @@ class PhpClass extends PhpElement
      * @access private
      */
     private $functions;
+
+    /**
+     *
+     * @var PhpClassUse[]
+     * @access private
+     */
+    private $classUses;
 
     /**
      *
@@ -177,9 +184,18 @@ class PhpClass extends PhpElement
             $ret .= $this->getIndentionStr() . 'const __default = ' . $this->default . ';' . PHP_EOL;
         }
 
+        if (count($this->classUses) > 0) {
+            foreach ($this->classUses as $classUse) {
+                $classUse->setIndentionStr($this->getIndentionStr());
+                $ret .= $classUse->getSource();
+            }
+            $ret .= PHP_EOL;
+        }
+
         if (count($this->constants) > 0) {
-            foreach ($this->constants as $name => $value) {
-                $ret .= $this->getIndentionStr() . 'const ' . $name . ' = \'' . $value . '\';' . PHP_EOL;
+            foreach ($this->constants as $constant) {
+                $constant->setIndentionStr($this->getIndentionStr());
+                $ret.=$constant->getSource();
             }
             $ret .= PHP_EOL;
         }
@@ -242,30 +258,16 @@ class PhpClass extends PhpElement
     /**
      * Adds a constant to the class. If no name is supplied and the value is a string the value is used as name otherwise exception is raised
      *
-     * @param mixed $value
-     * @param string $name
+     * @param PhpConstant $constant
      * @throws Exception
      */
-    public function addConstant($value, $name = '')
+    public function addConstant(PhpConstant $constant = null)
     {
-        if (strlen($value) == 0) {
-            throw new Exception('No value supplied');
+        if (array_key_exists($constant->getName(), $this->constants)) {
+            throw new Exception('A constant of the name (' . $constant->getName() . ') does already exist.');
         }
 
-        // If no name is supplied use the value as name
-        if (strlen($name) == 0) {
-            if (is_string($value)) {
-                $name = $value;
-            } else {
-                throw new Exception('No name supplied');
-            }
-        }
-
-        if (array_key_exists($name, $this->constants)) {
-            throw new Exception('A constant of the name (' . $name . ') does already exist.');
-        }
-
-        $this->constants[$name] = $value;
+        $this->constants[$constant->getName()] = $constant;
     }
 
     /**
@@ -300,6 +302,23 @@ class PhpClass extends PhpElement
         }
 
         $this->functions[$function->getIdentifier()] = $function;
+    }
+
+    /**
+     * Adds a use to the class
+     * Overwrites
+     *
+     * @param PhpClassUse $classUse The class use object to add
+     * @access public
+     * @throws Exception If the function name already exists
+     */
+    public function addClassUse(PhpClassUse $classUse)
+    {
+        if ($this->functionExists($classUse->getTraitName())) {
+            throw new Exception('A class use of the name (' . $classUse->getIdentifier() . ') does already exist.');
+        }
+
+        $this->classUses[$classUse->getTraitName()] = $classUse;
     }
 
     /**
