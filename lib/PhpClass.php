@@ -174,7 +174,7 @@ class PhpClass extends PhpElement
             $ret .= ' extends ' . implode(', ', $this->extends);
         }
 
-        if (count($this->implements) > 0) {
+        if (count((array)$this->implements) > 0) {
             $ret .= ' implements ' . implode(', ', $this->implements);
         }
 
@@ -184,7 +184,7 @@ class PhpClass extends PhpElement
             $ret .= $this->getIndentionStr() . 'const __default = ' . $this->default . ';' . PHP_EOL;
         }
 
-        if (count($this->classUses) > 0) {
+        if (count((array)$this->classUses) > 0) {
             foreach ($this->classUses as $classUse) {
                 $classUse->setIndentionStr($this->getIndentionStr());
                 $ret .= $classUse->getSource();
